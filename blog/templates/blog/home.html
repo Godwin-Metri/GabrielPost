@@ -1,0 +1,68 @@
+{% extends 'blog/index.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="nav-scroller py-1 mb-2">
+      <nav class="nav d-flex justify-content-between">
+        <a class="p-2 link-secondary" href="#">Old Testament</a>
+        <a class="p-2 link-secondary" href="#">U.S.</a>
+        <a class="p-2 link-secondary" href="#">Technology</a>
+        <a class="p-2 link-secondary" href="#">Design</a>
+        <a class="p-2 link-secondary" href="#">Culture</a>
+        <a class="p-2 link-secondary" href="#">Business</a>
+        <a class="p-2 link-secondary" href="#">Politics</a>
+        <a class="p-2 link-secondary" href="#">Opinion</a>
+        <a class="p-2 link-secondary" href="#">Science</a>
+        <a class="p-2 link-secondary" href="#">Health</a>
+        <a class="p-2 link-secondary" href="#">Style</a>
+        <a class="p-2 link-secondary" href="#">Travel</a>
+      </nav>
+    </div>
+    <main class="container">
+      <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+          <h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
+          <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+          <p class="lead mb-0"><a href="#" class="text-white fw-bold">Continue reading...</a></p>
+        </div>
+      </div>
+    {% for blog in blogs %}
+
+      <div class="row mb-2">
+        <div class="col-md-9 offset-md-2">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <strong class="d-inline-block mb-2 text-primary">{{ blog.blog_author }}</strong>
+              <h3 class="mb-0">{{ blog.blog_title }}</h3>
+              <div class="mb-1 text-muted">{{ blog.date_posted_on }}</div>
+              <em><p class="card-text mb-auto">{{ blog.blog_short_desc|safe }}</p></em>
+              <a href="{% url 'blog_detail' blog.slug %}" class="stretched-link">Continue reading</a>
+            </div>
+            <div class="col-auto d-none d-lg-block">
+                <img src="{{ blog.blog_image.url }}" alt="oops" class="img-thumbnail" role="img" aria-label="Placeholder: Thumbnail">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
+        <div class="bd-example  col-md-15 offset-md-4">
+        <nav aria-label="Another pagination example">
+          <ul class="pagination pagination-lg flex-wrap">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active" aria-current="page">
+              <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
+        </div>
+    </main>
+{% endblock content %}

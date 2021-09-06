@@ -1,0 +1,25 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="text-center">
+        <img class="mb-4 rounded-circle" src="{% static 'blog/logo.jpg' %}" alt="" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">Login</h1>
+    </div>
+      <form method="post">
+          {% csrf_token %}
+
+            {{ form|crispy }}
+        <br>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+<!--        <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>-->
+      </form>
+        <div class="border-top pt-3 text-center">
+                <small class="text-muted">
+                    Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up</a>
+                </small>
+            </div>
+
+{% endblock content %}

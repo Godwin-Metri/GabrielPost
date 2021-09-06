@@ -1,0 +1,141 @@
+{% extends 'blog/index.html' %}
+{% block content %}
+
+
+  <div class="row g-5">
+    <div class="col-md-8">  <br>
+      {% if username == blog.blog_author %}
+      <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" href="{% url 'blog_update' blog.slug %}">Update</a></li>
+              <li><a class="dropdown-item" href="{% url 'blog_delete' blog.slug %}">Delete</a></li>
+
+            </ul>
+        <a type="button" class="btn btn-secondary" href="{% url 'add_content' blog.slug %}">Add more</a>
+          </div>
+      <br>
+
+
+      {% endif %}
+
+<!--  -----------------------------------Blog Section------------------------------------------------------->
+      <article class="blog-post">
+        <h2 class="blog-post-title">{{ blog.blog_title }}</h2>
+        <p class="blog-post-meta">{{blog.date_posted_on}} by <a href="#">{{blog.blog_author}}</a></p>
+                <hr>
+        <p>{{ blog.blog_short_desc|safe }}</p>
+
+        <img src="{{ blog.blog_image.url }}" alt="oops" height="300">
+        <br><br>
+        <p>{{ blog.blog_complete_desc|safe }}</p>
+
+
+         {% for content in additional_content %}
+
+          <div>
+              <bold><h3>{{ content.title }}</h3></bold>
+              {% if content.image %}
+              <img src="{{ content.image.url }}" alt="oops" height="300">
+              {% endif %}
+              <p>
+                  {{ content.body|safe }}
+
+              </p>
+          </div>
+          {% endfor %}
+
+          {% if has_liked %}
+          <form action="{% url 'blog_dislike' blog.slug %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-secondary">Dislike</button>
+          </form>
+          {% else %}
+          <form action="{% url 'blog_likes' blog.slug %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary">Like</button>
+          </form>
+        {% endif %}
+
+
+<!--      ---------------------  Comment Section-------------------------------------------->
+        <div class="card my-4">
+          <h5 class="card-header">Leave a Comment:</h5>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <textarea class="form-control" rows="3" name="commentText"></textarea>
+              </div>
+              <br>
+              <input class="btn btn-primary" type="submit" value="Submit">
+            </form>
+          </div>
+        </div>
+        <br><br>
+        {% if blog.commentmodel_set.all %}
+            <div>
+              <h4>{{ blog.commentmodel_set.all.count }} Comments!</h4>
+            </div>
+
+        <!-- Single Comment -->
+        {% for a in blog.commentmodel_set.all %}
+        <div class="media mb-4">
+<!--          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">-->
+          <div class="media-body">
+            <div class="card my-2">
+              <h5 class="mt-0">
+                <a href="#">{{ a.comment_author }}</a>
+              </h5>
+              <p>{{ a.comment }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <nav class="blog-pagination" aria-label="Pagination">
+        <a class="btn btn-outline-primary" href="#">Older</a>
+        <a class="btn btn-outline-secondary " href="#" tabindex="-1" aria-disabled="true">Newer</a>
+      </nav>
+        {% endif %}
+
+      </div>
+
+
+<!--    ------------------------------------Sidebar section------------------------------------------    -->
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="p-4 mb-3 bg-light rounded">
+          <h4 class="fst-italic">About us</h4>
+          <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad blanditiis consequuntur distinctio doloribus dolorum eligendi enim facere, illo magnam molestiae, non officia, omnis rem repudiandae sed soluta vitae voluptas!</p>
+        </div>
+        <div class="p-4">
+          <h4 class="fst-italic">Top posts</h4>
+          <ul class="list-group">
+            {% for p in all_post %}
+<!--              <li><a href="{% url 'blog_detail' p.id %}">{{ p.blog_title }}</a></li>-->
+
+          <li class="list-group-item">
+            <a href="{% url 'blog_detail' p.slug %}">{{ p.blog_title }}</a>
+          </li>
+
+
+            {% endfor %}
+          </ul>
+        </div>
+
+<!--        <div class="p-4">-->
+<!--          <h4 class="fst-italic">Elsewhere</h4>-->
+<!--          <ol class="list-unstyled">-->
+<!--            <li><a href="#">GitHub</a></li>-->
+<!--            <li><a href="#">Twitter</a></li>-->
+<!--            <li><a href="#">Facebook</a></li>-->
+<!--          </ol>-->
+<!--        </div>-->
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
