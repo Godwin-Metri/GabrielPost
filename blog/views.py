@@ -4,6 +4,7 @@ from .models import BlogModel, CommentModel, AddBlogModel
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import AddBlogContentForm
+from django.contrib.auth.models import User
 
 
 class HomePage(ListView):
@@ -17,7 +18,8 @@ class HomePage(ListView):
 
 @login_required()
 def blogDetail(request, slug):
-    user = request.user
+    user = User.objects.get(id=request.user.id)
+
     post_all = BlogModel.objects.all()[:5]
     post = BlogModel.objects.filter(slug=slug).first()
     if not post:
@@ -28,18 +30,17 @@ def blogDetail(request, slug):
         comment_object.save()
         return redirect(f'/blog/{slug}/')
 
-    # like = user.post_likes.get(post)
-    # print(user.post_likes.get(id=post.id))
-    if user.post_likes.get(id=post.id):
-        like = True
+    if post in user.post_likes.all():
+        has_liked = True
     else:
-        like = False
+        has_liked = False
+
     context = {
         'blog': post,
         'username': request.user,
         'all_post': post_all,
         'additional_content': additional_content,
-        'has_liked': like,
+        'has_liked': has_liked,
     }
     return render(request, 'blog/blogDetail.html', context=context)
 
@@ -129,4 +130,4 @@ def dislike(request, slug):
         blog = blog.first()
     if request.method == 'POST':
         blog.likes.remove(request.user)
-        return redirect('home')
+        return redirect(blog.get_absolute_url())
